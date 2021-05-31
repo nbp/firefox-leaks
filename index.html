@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="decision.css">
+    </head>
+    <body>
+        <header>
+            <h1>Leak Epistemology</h1>
+        </header>
+        <main>
+            <section class="add-to-met met-new">
+                <article class="pre-new">
+                    <p>This page will guide you on how to investigate a memory
+                    issue seen in Firefox. You will be faced with buttons to
+                    answer the various questions and the questions would be
+                    refined based on your answers.</p>
+
+                    <p>At any time, you can copy the address bar and resume this
+                    investigation later on.</p>
+
+                    <p>If you think Firefox leaks memory, we should first
+                    analyze where the issue is coming from.</p>
+
+                    <button class="add-analyze">Analyze</button>
+                </article>
+
+                <article class="pre-analyze">
+                    <p>Firefox has a special page which is named <a href="about:memory">about:memory</a>.
+                    This page is the first page to visit if you have any doubt
+                    about the memory consumption of Firefox.</p>
+
+                    <p>If you have not done so already open a new tab and type <a href="about:memory">about:memory</a> in
+                    the address bar.</p>
+
+                    <p>When you visit this page, you are faced with multiple
+                    buttons, and your first goal is to identify what might
+                    sounds abnormal.</p>
+
+                    <p>To generate a report, click on the "measure" button under
+                    the "Show memory reports" box on the top-left corner.</p>
+
+                    <figure>
+                        <img src="img/about-memory-measure-button.png"
+                             alt="Highlight the "Measure current memory report
+                                  and show" button.">
+                        <figcaption></figcaption>
+                    </figure>
+
+                    <p>An abnormal report would be a report where a process
+                    consume an excessive amount of memory, and that this memory
+                    seems excessive compared to the amount of content displayed
+                    in the associated web page, or compared to the work
+                    performed by the corresponding extensions.</p>
+
+                    <p>The index of processes can be found on the right side of
+                    the page. One should identify which process consumes an
+                    excessive amount of memory by clicking on each process link,
+                    and the first line named "explicit".</p>
+
+                    <figure>
+                        <img src="img/about-memory-process-index.png"
+                             alt="Example of the content to be expected in the
+                                  panel on the right side of the page, which list the Main
+                                  process, multiple `web` processes, followed by
+                                  extension, priviledgedabout, RDD and Socket processes.">
+                        <figcaption></figcaption>
+                    </figure>
+
+                    <p>The explicit line account for all allocations made within
+                    a single process. An abnormal memory consumption would have
+                    a process with an explicit value which is above 1 GB, or
+                    twice higher than the other processes.</p>
+
+                    <p>Is there abnormal value in <a href="about:memory">about:memory</a>?</p>
+                    <button class="add-abnormal-about-memory">Yes</button>
+                    <button class="add-normal-about-memory">No</button>
+                </article>
+                <article class="pre-normal-about-memory">
+                    <!-- TODO -->
+                    <p>There is nothing anormal in <a href="about:memory">about:memory</a>.</p>
+
+                    <p>Does the system tray display any value which would be
+                    highly different than the memory reported in <a href="about:memory">about:memory</a>?</p>
+
+                    <button class="add-normal-about-memory-bad-system-memory">Yes</button>
+                    <button class="add-no-issue">No</button>
+                </article>
+
+                <article class="pre-normal-about-memory-bad-system-memory">
+                    <!-- TODO: Add a link to bugzilla. -->
+                    <p>The fact that <a href="about:memory">about:memory</a> reports
+                    a value different than the value reported by the system for
+                    the same process suggests that there is a problem in our
+                    memory reporting strategy.</p>
+
+                    <p>Open a bug against the memory reporting tools, such that
+                    developer can fix this issue before doing more investigation
+                    on the potential leak issue which made you visit this page.</p>
+                </article>
+
+                <article class="pre-no-issue">
+                    <!-- TODO: Add a link to bugzilla. -->
+                    <p>We do not seem to detect anything suspicious during this
+                    investigation. If you are not convinced, you can still open
+                    a bug.</p>
+                </article>
+
+                <article class="pre-abnormal-about-memory">
+                    <p>The next step, while still looking at the report from <a href="about:memory">about:memory</a> is
+                    to determine where the problem is.</p>
+
+                    <p>The explicit section contains multiple sub-sections, such
+                    as "heap-unclassified", "window-objects", "gfx". To identify
+                    the biggest offender, fold everything, by clicking on the
+                    sub-sections, and only expand the window-objects
+                    sub-section.</p>
+
+                    <figure>
+                        <img src="img/about-memory-explicit-detail.png"
+                             alt="Example of a process where explicit
+                                  allocations are expanded in window-objects,
+                                  heap-unclassified, heap-overhead- js-non-window, (22 tiny),
+                                  images and xpconnect. In addition the window-objects
+                                  section is expanded in top(https://www.mlb.com/) and top(none).
+                                  No other section is expanded.
+
+                                  Each sub-section is annotated with some amount of memory
+                                  as well as a percentage. In this image the sub-section
+                                  top(https://www.mlb.com) has a percentage of 70 per
+                                  cent.">
+                        <figcaption></figcaption>
+                    </figure>
+
+                    <p>What interest us now, is the name of the sub-section
+                    which has the highest percentage value. Knowing this would
+                    help us use the proper tool to investigate the memory issue.</p>
+
+                    <p>In your report from <a href="about:memory">about:memory</a>,
+                    in the abnormal process, under which sub-section do you see
+                    the highest percentage located?</p>
+
+                    <button class="add-website-issue">window-objects</button>
+                    <button class="add-refine-this-website">atoms</button>
+                    <button class="add-refine-this-website">cert-storage</button>
+                    <button class="add-refine-this-website">cookie-service</button>
+                    <button class="add-refine-this-website">cycle-collector</button>
+                    <button class="add-refine-this-website">data-storage</button>
+                    <button class="add-refine-this-website">dmd</button>
+                    <button class="add-refine-this-website">dom</button>
+                    <button class="add-refine-this-website">gfx</button>
+                    <button class="add-refine-this-website">heap-overhead</button>
+                    <button class="add-dmd-investigation">heap-unclassified</button>
+                    <button class="add-refine-this-website">history-links-hashtable</button>
+                    <button class="add-refine-this-website">icu</button>
+                    <button class="add-refine-this-website">images</button>
+                    <button class="add-refine-this-website">js-non-window</button>
+                    <button class="add-refine-this-website">layout</button>
+                    <button class="add-refine-this-website">media</button>
+                    <button class="add-refine-this-website">memory-reporter-manager</button>
+                    <button class="add-refine-this-website">network</button>
+                    <button class="add-refine-this-website">preferences</button>
+                    <button class="add-refine-this-website">profiler</button>
+                    <button class="add-refine-this-website">script-preloader</button>
+                    <button class="add-refine-this-website">skia-font-cache</button>
+                    <button class="add-refine-this-website">spell-check</button>
+                    <button class="add-refine-this-website">startup-cache</button>
+                    <button class="add-refine-this-website">storage</button>
+                    <button class="add-refine-this-website">string-bundles</button>
+                    <button class="add-refine-this-website">telemetry</button>
+                    <button class="add-refine-this-website">threads</button>
+                    <button class="add-refine-this-website">url-preloader</button>
+                    <button class="add-refine-this-website">workers</button>
+                    <button class="add-refine-this-website">xpcom</button>
+                    <button class="add-refine-this-website">xpconnect</button>
+                    <button class="add-refine-this-website">xul-prototype-cache</button>
+                </article>
+
+                <article class="pre-refine-this-website">
+                    <p>Unfortunately, we have not yet seen enough of these
+                        issues yet to provide with good rules of thumbs on what to
+                        do next.</p>
+
+                    <p>Open a bug to get your issue fixed, and mention that this
+                        website should be refined with the new findings.</p>
+                </article>
+
+                <article class="pre-website-issue">
+                    <p>The problem seems to be isolated with one website. Then
+                    we have to figure out whether this can be reproduced and if
+                    there is any special conditions under which this problem can
+                    be reproduced.</p>
+
+                    <button class="add-reproduce">Reproduce</button>
+                </article>
+
+                <article class="pre-reproduce">
+                    <p>Reproducing a memory issue can be a difficult task, as it
+                    is not always obvious what circunstances caused the issue.
+                    However, if we fail to reproduce the problem, we have no way
+                    to know whether a futur change will fix the problem or not.</p>
+
+                    <p>A bug which is not reproducible is most likely
+                    non-actionable.</p>
+
+                    <p>In some cases, Firefox web-extensions, by manipulating
+                    the web-pages will cause leaks to appear. An easy way to
+                    test that is to either create a new profile or to use thr
+                    trouble-shoot mode. If the bug take a long time to
+                    reproduce, a new profile might be the easiest way to go.</p>
+
+                    <button class="add-repro-with-troubleshoot">Try the Troubleshoot mode</button>
+                    <button class="add-repro-with-new-profile">Try using a new profile</button>
+                </article>
+
+                <article class="pre-repro-with-troubleshoot">
+                    <p>The <a href="https://support.mozilla.org/en-US/kb/diagnose-firefox-issues-using-troubleshoot-mode">troubleshoot mode</a> is
+                    a special mode of Firefox which restarts Firefox with a
+                    configuration which has less tweaks, and closer to the
+                    default settings from Firefox.</p>
+
+                    <p>Are you able to reproduce this issue with the
+                    troubleshoot mode?</p>
+
+                    <button class="add-repro-with-new-profile">Try using a new profile</button>
+                    <button class="add-repro-clean-setup">Yes</button>
+                    <button class="pre-repro-with-new-profile add-not-repro-with-different-firefox">No</button>
+                </article>
+
+                <article class="pre-repro-with-new-profile">
+                    <p>Firefox has the option to setup a different profile,
+                    which does not share anything with the original profile. You
+                    can manage profile using the documentation mentioned on <a href="https://support.mozilla.org/en-US/kb/profile-manager-create-remove-switch-firefox-profiles">support.mozilla.org</a>.</p>
+
+                    <p>Are you able to reproduce this issue with the a new
+                    profile?</p>
+
+                    <button class="add-repro-with-troubleshoot">Try the Troubleshoot mode</button>
+                    <button class="add-repro-new-profile">Yes</button>
+                    <button class="pre-repro-with-troubleshoot add-not-repro-with-different-firefox">No</button>
+                </article>
+
+                <article class="pre-not-repro-with-different-firefox">
+                    <p>Something in your configuration seems to cause the
+                    problem to happen, either it is one addon, or a modification
+                    of Firefox configuration as found in <a href="about:config">about:config</a>.</p>
+
+                    <p>At this stage, your goal is to isolate the minimal set of
+                    addons/parameters which are causing this issue to happen.
+                    Either by creating a new profile and reproducing as much as
+                    possible your current configuration, or by modifying your
+                    current profile by disabling most of the configuration.</p>
+
+                    <p>Is this issue appearing when a specific addon/parameter is enabled?</p>
+
+                    <button class="add-caused-by-specific-addon">Issue caused by a specific Addon.</button>
+                    <button class="add-caused-by-specific-parameter">Issue caused by a specific parameter.</button>
+                </article>
+
+                <article class="pre-caused-by-specific-addon">
+                    <p>Unfortunately, there is not much we can do.</p>
+
+                    <p>Your best plan is to report this issue to the author of
+                    the addon. In the mean time, if the leak is causing too many
+                    problems you can disable the addon.</p>
+                </article>
+
+                <article class="pre-caused-by-specific-addon">
+                    <!-- TODO: Add a link to bugzilla. -->
+                    <p>Good news! This problem might to be related to Firefox.
+                    Open a bug, and report these findings naming explicitly the
+                    parameters which are causing Firefox to leak memory, and how
+                    to use Firefox to reproduce this memory leak.</p>
+                </article>
+
+                <article class="pre-repro-clean-setup pre-repro-new-profile">
+                    <p>Awesome, you managed to reproduce this issue with a fresh Firefox!</p>
+
+                    <p>By reproducing this issue in a different browser this
+                    would either move the blame to the Website developers or
+                    Firefox developers. To check this, you will have to rely on
+                    a browser which is not based on Gecko, such as Chromium.</p>
+
+                    <p>Now the question is can this leak be reproduced in a
+                    different browser which is not based on Gecko?</p>
+
+                    <button class="add-can-repro-in-another-browser">Yes</button>
+                    <button class="add-cannot-repro-in-another-browser">No</button>
+                </article>
+
+                <article class="pre-can-repro-in-another-browser">
+                    <p>Unfortunately, there is not much that Firefox developers
+                    can do, the website your are using seems to have a problem.</p>
+
+                    <p>Your best plan is to report this issue to the author of
+                    the website.</p>
+                </article>
+
+                <article class="pre-cannot-repro-in-another-browser">
+                    <p>The problem seems to appear in a clean Firefox profile,
+                    but it does not appear in other browser. This seems to be a
+                    Firefox issue.</p>
+
+                    <p>Firefox is a huge piece of software, and we have
+                    different tools capable of reporting abnormal behavior in
+                    different sections of Firefox.</p>
+
+                    <p>When looking at about:memory, did you notice any major
+                    usage of JavaScript memory?</p>
+                </article>
+            </section>
+        </main>
+        <footer></footer>
+    </body>
+    <script src="./decision.js"></script>
+</html>

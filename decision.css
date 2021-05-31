@@ -1,0 +1,15 @@
+body {
+    background-color: white;
+}
+
+article {
+    background-color: #ddd;
+    border-left: 10px solid limegreen;
+    padding-left: 10px;
+    border-radius: 10px;
+}
+
+main {
+    width: 50%;
+    margin: auto;
+}
